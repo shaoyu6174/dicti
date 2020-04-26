@@ -1,6 +1,7 @@
 import crawl
 import processing
-
+import os
+os.remove("result.json") 
 with open("input.txt", 'r') as f:
     contents = f.readlines()
     modified = []
