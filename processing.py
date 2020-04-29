@@ -8,8 +8,9 @@ def do():
     data = data.sort_values('word')
     with open("output.txt", 'w') as f:
         for index, row in data.iterrows():
-            f.write("\t")
-            f.write(row['word'])
-            f.write(": ")
-            f.write(row['defi'])
-            f.write("\n")
+            if row['word'].islower():
+                f.write("*  ")
+                f.write(row['word'])
+                f.write(": ")
+                f.write(row['defi'])
+                f.write("\n\n")
