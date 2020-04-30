@@ -2,8 +2,9 @@
 import utils
 import os
 
+
 if os.path.exists("result.json"):
-    os.remove("result.json") 
+    os.remove("result.json")
 with open("input.txt", 'r') as f:
     contents = f.readlines()
     wordlist = []

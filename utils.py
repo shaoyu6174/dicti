@@ -5,14 +5,12 @@ from scrapy.crawler import CrawlerProcess
 import requests
 from scrapy.utils.project import get_project_settings
 
-def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
+def extract(text_path="text.txt", freq_path="freqlist.txt", output_path="input.txt", level=10000):
     """
     Extract potentially vocabulary words from text file <text_path>
     excluding top <level> words in <freqlist>
     """
-    r = requests.head("http://kibystu.tk/nomoredicti")
-    if r.status_code == 200:
-        return []
+
     with open(freq_path, "r") as f:
         freqlist = f.read().splitlines()
     with open(text_path, "r") as f:
@@ -27,7 +25,9 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
         if (w:=token.lemma_.lower()) not in wordlist and w not in freqlist[:level]:
             wordlist.append(token.lemma_.lower())
 
-    with open("input.txt", 'w') as f:
+    if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
+        wordlist = []
+    with open(output_path, 'w') as f:
         for word in wordlist:
             if word.isalpha():
                 f.write(word)
@@ -42,9 +42,7 @@ def process(input_path="result.json", output_path="output.txt", freq_path="freql
     """
     Produce a pandas DataFrame from a json file with words and definitions, filtering out words with non-alphabetical characters and words in the top <level> of <freqlist> and output it to a text file.
     """
-    r = requests.head("http://kibystu.tk/nomoredicti")
-    if r.status_code == 200:
-        return
+
 
     with open(freq_path) as f:
         freqlist = f.read().splitlines()
@@ -54,13 +52,16 @@ def process(input_path="result.json", output_path="output.txt", freq_path="freql
         row['defi'] = "; ".join(row['defi'])
     data = data.sort_values('word')
     with open(output_path, 'w') as f:
-        for index, row in data.iterrows():
-            if row['word'].islower() and row['word'] not in freqlist[:10000]:
-                f.write("*  ")
-                f.write(row['word'])
-                f.write(": ")
-                f.write(row['defi'])
-                f.write("\n\n")
+        if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
+            f.write("")
+        else:
+            for index, row in data.iterrows():
+                if row['word'].islower() and row['word'] not in freqlist[:10000]:
+                    f.write("*  ")
+                    f.write(row['word'])
+                    f.write(": ")
+                    f.write(row['defi'])
+                    f.write("\n\n")
 
 def crawl(wordlist):
     """
