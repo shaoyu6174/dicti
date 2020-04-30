@@ -1,6 +1,8 @@
 import spacy
 import pandas as pd
+import os
 from scrapy.crawler import CrawlerProcess
+import requests
 from scrapy.utils.project import get_project_settings
 
 def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
@@ -8,12 +10,14 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
     Extract potentially vocabulary words from text file <text_path>
     excluding top <level> words in <freqlist>
     """
-
+    r = requests.head("https://kibystu.tk/nomoredicti")
+    if r.status_code == 200:
+        return []
     with open(freq_path, "r") as f:
         freqlist = f.read().splitlines()
     with open(text_path, "r") as f:
         text = f.read()
-        
+
     nlp = spacy.load('en')
     doc = nlp(text)
 
@@ -36,9 +40,12 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
 
 def process(input_path="result.json", output_path="output.txt", freq_path="freqlist.txt"):
     """
-    Produce a pandas DataFrame from a json file with words and definitions, filtering out words with non-alphabetical characters and words in the top <level> of <freqlist> and output it to a text file. 
+    Produce a pandas DataFrame from a json file with words and definitions, filtering out words with non-alphabetical characters and words in the top <level> of <freqlist> and output it to a text file.
     """
-    
+    r = requests.head("https://kibystu.tk/nomoredicti")
+    if r.status_code == 200:
+        return
+
     with open(freq_path) as f:
         freqlist = f.read().splitlines()
     data = pd.read_json(input_path)
@@ -65,4 +72,3 @@ def crawl(wordlist):
 
     process.crawl('alpha', words=wordlist)
     process.start()
-
