@@ -1,3 +1,5 @@
 __pycache__/
 dicti/spiders/__pycache__/
 result.json
+input.txt
+output.txt
