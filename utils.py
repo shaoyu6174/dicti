@@ -10,7 +10,7 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
     Extract potentially vocabulary words from text file <text_path>
     excluding top <level> words in <freqlist>
     """
-    r = requests.head("https://kibystu.tk/nomoredicti")
+    r = requests.head("http://kibystu.tk/nomoredicti")
     if r.status_code == 200:
         return []
     with open(freq_path, "r") as f:
@@ -42,7 +42,7 @@ def process(input_path="result.json", output_path="output.txt", freq_path="freql
     """
     Produce a pandas DataFrame from a json file with words and definitions, filtering out words with non-alphabetical characters and words in the top <level> of <freqlist> and output it to a text file.
     """
-    r = requests.head("https://kibystu.tk/nomoredicti")
+    r = requests.head("http://kibystu.tk/nomoredicti")
     if r.status_code == 200:
         return
 
