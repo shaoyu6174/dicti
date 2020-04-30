@@ -1,13 +1,15 @@
-import crawl
-import processing
+#!/usr/bin/env python3
+import utils
 import os
-os.remove("result.json") 
+
+if os.path.exists("result.json"):
+    os.remove("result.json") 
 with open("input.txt", 'r') as f:
     contents = f.readlines()
-    modified = []
+    wordlist = []
     for line in contents:
-        modified.append(line.rstrip())
-    src = ",".join(modified)
+        wordlist.append(line.rstrip())
+    words = ",".join(wordlist)
 
-crawl.lookup(src)
-processing.do()
+utils.crawl(words)
+utils.process()
