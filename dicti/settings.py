@@ -15,7 +15,7 @@ SPIDER_MODULES = ['dicti.spiders']
 NEWSPIDER_MODULE = 'dicti.spiders'
 FEED_FORMAT = 'json'
 FEED_URI = 'result.json'
-
+LOG_LEVEL = 'INFO'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'dicti (+http://www.yourdomain.com)'
 
