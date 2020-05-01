@@ -61,7 +61,7 @@ def process(input_path="result.json", output_path="output.txt", freq_path="freql
                     f.write(row['word'])
                     f.write(": ")
                     f.write(row['defi'])
-                    f.write("\n\n")
+                    f.write("\n")
 
 def crawl(wordlist):
     """
