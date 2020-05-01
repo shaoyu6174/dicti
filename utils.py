@@ -5,7 +5,7 @@ from scrapy.crawler import CrawlerProcess
 import requests
 from scrapy.utils.project import get_project_settings
 
-def extract(text_path="text.txt", freq_path="freqlist.txt", output_path="input.txt", level=10000):
+def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
     """
     Extract potentially vocabulary words from text file <text_path>
     excluding top <level> words in <freqlist>
@@ -27,14 +27,9 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", output_path="input.t
 
     if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
         wordlist = []
-    with open(output_path, 'w') as f:
-        for word in wordlist:
-            if word.isalpha():
-                f.write(word)
-                f.write("\n")
-                count+=1
 
-    print(str(count) + " words extracted at level " + str(level))
+
+
 
     return wordlist
 
