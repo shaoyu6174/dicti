@@ -12,6 +12,6 @@ if len(sys.argv) > 2:
 
 
 wordlist = utils.extract(text, level=level)
-utils.writelist(path, wordlist)
+utils.writelist(wordlist, path)
 
 print(str(len(wordlist)) + " words extracted at level " + str(level))
