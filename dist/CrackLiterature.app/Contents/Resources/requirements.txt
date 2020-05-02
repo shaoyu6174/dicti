@@ -1,4 +1,0 @@
-scrapy
-spacy
-pandas
-wxpython
