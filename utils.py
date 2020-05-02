@@ -9,6 +9,7 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
     """
     Extract potentially vocabulary words from text file <text_path>
     excluding top <level> words in <freqlist>
+    Returns list of all extract words.
     """
 
     with open(freq_path, "r") as f:
@@ -22,20 +23,21 @@ def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
     count = 0
     wordlist = []
     for token in doc:
-        if (w:=token.lemma_.lower()) not in wordlist and w not in freqlist[:level]:
+        if (w:=token.lemma_.lower()) not in wordlist \
+            and w not in freqlist[:level] \
+            and w.isalpha():
             wordlist.append(token.lemma_.lower())
 
     if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
         wordlist = []
 
-
-
-
     return wordlist
 
 def process(input_path="result.json", output_path="output.txt", freq_path="freqlist.txt"):
     """
-    Produce a pandas DataFrame from a json file with words and definitions, filtering out words with non-alphabetical characters and words in the top <level> of <freqlist> and output it to a text file.
+    Produce a pandas DataFrame from a json file with words and definitions,
+    filtering out words with non-alphabetical characters and words in the
+    top <level> of <freqlist>, sort it alphabetically and output it to a text file.
     """
 
 
