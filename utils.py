@@ -7,40 +7,16 @@ from scrapy.crawler import CrawlerProcess
 import requests
 from scrapy.utils.project import get_project_settings
 
-def extract(text_path="text.txt", freq_path="freqlist.txt", level=10000):
+def extract(text, freq_path="freqlist.txt", level=10000):
     """
-    Extract potentially vocabulary words from text file <text_path>
+    Extract potentially vocabulary words from text as string
     excluding top <level> words in <freqlist>
     Returns list of all extract words.
     """
-
-    with open(freq_path, "r") as f:
-        freqlist = f.read().splitlines()
-    with open(text_path, "r") as f:
-        text = f.read()
-
+    freqlist = readlist(freq_path)
     nlp = spacy.load('en')
     doc = nlp(text)
 
-    count = 0
-    wordlist = []
-    for token in doc:
-        if (w:=token.lemma_.lower()) not in wordlist \
-            and w not in freqlist[:level] \
-            and w.isalpha():
-            wordlist.append(token.lemma_.lower())
-
-    if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
-        wordlist = []
-
-    return wordlist
-
-def extractWithGUI(value, freq_path="freqlist.txt",level=10000):
-    with open(freq_path, "r") as f:
-        freqlist = f.read().splitlines()
-    nlp = spacy.load('en')
-    doc = nlp(value)
-    count = 0
     wordlist = []
     for token in doc:
         if (w := token.lemma_.lower()) not in wordlist \
@@ -51,15 +27,12 @@ def extractWithGUI(value, freq_path="freqlist.txt",level=10000):
         wordlist = []
     return wordlist
 
-def process(output_path_dir,input_path="result.json", freq_path="freqlist.txt"):
+def process(input_path="result.json", freq_path="freqlist.txt", level=10000):
     """
     Produce a pandas DataFrame from a json file with words and definitions,
     filtering out words with non-alphabetical characters and words in the
-    top <level> of <freqlist>, sort it alphabetically and output it to a text file.
+    top <level> of <freqlist>, sort it alphabetically and return a list.
     """
-
-    open(output_path_dir+"output.txt", 'w')
-    output_path = "{0}/output.txt".format(output_path_dir)
 
     with open(freq_path) as f:
         freqlist = f.read().splitlines()
@@ -68,17 +41,15 @@ def process(output_path_dir,input_path="result.json", freq_path="freqlist.txt"):
         row['defi'] = filter(lambda s : s.lower().islower(), row['defi'])
         row['defi'] = "; ".join(row['defi'])
     data = data.sort_values('word')
-    with open(output_path, 'w') as f:
-        if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
-            f.write("")
-        else:
-            for index, row in data.iterrows():
-                if row['word'].islower() and row['word'] not in freqlist[:10000]:
-                    f.write("*  ")
-                    f.write(row['word'])
-                    f.write(": ")
-                    f.write(row['defi'])
-                    f.write("\n")
+    processed = []
+
+    if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
+        processed = []
+    else:
+        for index, row in data.iterrows():
+            if row['word'].islower() and row['word'] not in freqlist[:level]:
+                processed.append("*  " + row['word'] + ": " + row['defi'])
+    return processed
 
 def crawl(wordlist):
     """
@@ -91,8 +62,20 @@ def crawl(wordlist):
     process.crawl('alpha', words=wordlist)
     process.start()
 
+def readlist(path):
+    with open(path, "r") as f:
+        l = f.read().splitlines()
+    return l
+
+def writelist(l, path):
+    with open(path, 'w') as f:
+        for item in l:
+            f.write(item)
+            f.write("\n")
+
+
 def getPath():
-    dialog = wx.DirDialog(None, "Choose a directory:", style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
+    dialog = wx.FileDialog(None, "Save As", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
     if dialog.ShowModal() == wx.ID_OK:
         path = dialog.GetPath()
     dialog.Destroy()

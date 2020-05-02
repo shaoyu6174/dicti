@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import utils
 import os
 import wx
@@ -25,22 +26,14 @@ class MyFrame(wx.Frame):
             self.text_ctrl.Hide()
             png = wx.Image('img/whatever.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
             wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth(), png.GetHeight()))
-            wordList = utils.extractWithGUI(value)
-            with open("input.txt", 'w') as f:
-                for word in wordList:
-                    f.write(word)
-                    f.write("\n")
             if os.path.exists("result.json"):
                 os.remove("result.json")
-            with open("input.txt", 'r') as f:
-                contents = f.readlines()
-                wordlist = []
-                for line in contents:
-                    wordlist.append(line.rstrip())
-                words = ",".join(wordlist)
+            wordlist = utils.extract(value)
+            words = ",".join(wordlist)
             path = utils.getPath()
             utils.crawl(words)
-            utils.process(path)
+            output = utils.process()
+            utils.writelist(output, path)
             png = wx.Image('img/finish.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
             wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth(), png.GetHeight()))
 

@@ -13,4 +13,5 @@ with open("input.txt", 'r') as f:
     words = ",".join(wordlist)
 
 utils.crawl(words)
-utils.process()
+output = utils.process()
+utils.writelist(output, "output.txt")
