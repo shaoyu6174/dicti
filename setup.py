@@ -7,16 +7,12 @@ Usage:
 
 from setuptools import setup
 
-APP = ['cracklit.py']
+APP = ['gui.py']
 DATA_FILES = []
-OPTIONS = {
-    'iconfile':'icon.icns',
-    'plist': {'CFBundleShortVersionString':'0.1.0',}
-}
+OPTIONS = {}
 
 setup(
     app=APP,
-    name='DefeatDeGroof',
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
