@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import utils
+from dicti import utils
 import os
 import wx
 import wx.adv
@@ -24,22 +24,23 @@ class MyFrame(wx.Frame):
             print("You didn't enter anything!")
         else:
             self.text_ctrl.Hide()
-            png = wx.Image('img/whatever.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+            png = wx.Image('dicti/img/whatever.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
             wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth(), png.GetHeight()))
             if os.path.exists("result.json"):
                 os.remove("result.json")
             wordlist = utils.extract(value)
             words = ",".join(wordlist)
+            print(wordlist)
             path = utils.getPath()
             utils.crawl(words)
             output = utils.process()
             utils.writelist(output, path)
-            png = wx.Image('img/finish.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+            png = wx.Image('dicti/img/finish.png', wx.BITMAP_TYPE_ANY).ConvertToBitmap()
             wx.StaticBitmap(self, -1, png, (0, 0), (png.GetWidth(), png.GetHeight()))
 
 
-
-if __name__ == '__main__':
+def start():
     app = wx.App()
     frame = MyFrame()
     app.MainLoop()
+

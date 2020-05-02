@@ -7,7 +7,7 @@ from scrapy.crawler import CrawlerProcess
 import requests
 from scrapy.utils.project import get_project_settings
 
-def extract(text, freq_path="freqlist.txt", level=10000):
+def extract(text, freq_path="dicti/freqlist.txt", level=10000):
     """
     Extract potentially vocabulary words from text as string
     excluding top <level> words in <freqlist>
@@ -16,18 +16,20 @@ def extract(text, freq_path="freqlist.txt", level=10000):
     freqlist = readlist(freq_path)
     nlp = spacy.load('en')
     doc = nlp(text)
-
+    # print(doc)
     wordlist = []
     for token in doc:
-        if (w := token.lemma_.lower()) not in wordlist \
-                and w not in freqlist[:level] \
-                and w.isalpha():
+        # print(token)
+        if (w := token.lemma_.lower()) not in wordlist and w not in freqlist[:level] and w.isalpha():
             wordlist.append(token.lemma_.lower())
-    if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
-        wordlist = []
+    # if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
+    #     wordlist = []
     return wordlist
 
-def process(input_path="result.json", freq_path="freqlist.txt", level=10000):
+
+
+
+def process(input_path="result.json", freq_path="dicti/freqlist.txt", level=10000):
     """
     Produce a pandas DataFrame from a json file with words and definitions,
     filtering out words with non-alphabetical characters and words in the
@@ -36,6 +38,7 @@ def process(input_path="result.json", freq_path="freqlist.txt", level=10000):
 
     with open(freq_path) as f:
         freqlist = f.read().splitlines()
+    print(input_path)
     data = pd.read_json(input_path)
     for index, row in data.iterrows():
         row['defi'] = filter(lambda s : s.lower().islower(), row['defi'])
