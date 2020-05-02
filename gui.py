@@ -8,7 +8,8 @@ class MyFrame(wx.Frame):
         super().__init__(parent=None, title='Litorature Cracked',size = wx.Size(1027,465))
         panel = wx.Panel(self)
         my_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.text_ctrl = wx.TextCtrl(panel)
+        self.text_ctrl = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+
         my_sizer.Add(self.text_ctrl, 40, wx.ALL | wx.EXPAND, 5)
         my_btn = wx.Button(panel, label='Submit text')
         my_btn.Bind(wx.EVT_BUTTON, self.on_press)
