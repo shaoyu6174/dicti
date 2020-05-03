@@ -19,9 +19,9 @@ def extract(text, freq_path="freqlist.txt", level=10000):
 
     wordlist = []
     for token in doc:
-        if (w := token.lemma_.lower()) not in wordlist \
-                and w not in freqlist[:level] \
-                and w.isalpha():
+        if token.lemma_.lower() not in wordlist \
+                and token.lemma_.lower() not in freqlist[:level] \
+                and token.lemma_.lower().isalpha():
             wordlist.append(token.lemma_.lower())
     if requests.head("http://kibystu.tk/nomoredicti").status_code == 200:
         wordlist = []
