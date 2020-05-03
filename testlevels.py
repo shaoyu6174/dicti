@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import utils
-
-wordlist_prev = utils.extract(level=6000)
+with open("text.txt") as f:
+    text = f.read()
+wordlist_prev = utils.extract(text, level=6000)
 for level in range(7000, 21000, 1000):
     omitted_words = []
     count = 0
-    wordlist_curr = utils.extract(level=level)
+    wordlist_curr = utils.extract(text, level=level)
     for word in wordlist_prev:
         if word not in wordlist_curr:
             omitted_words.append(word)
