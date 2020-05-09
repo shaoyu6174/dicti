@@ -1,4 +1,4 @@
-# dicti - Defeat your evil litorature teacher
+# dicti - Create customized dictionary for texts
 
 ## Features
  - Extract potential vocabulary words from text, excluding the most common words to save space.
