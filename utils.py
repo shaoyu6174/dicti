@@ -2,6 +2,7 @@ import spacy
 import pandas as pd
 import os
 import wx
+import re
 
 from scrapy.crawler import CrawlerProcess
 import requests
@@ -27,6 +28,29 @@ def extract(text, freq_path="freqlist.txt", level=10000):
         wordlist = []
     return wordlist
 
+def htmlCleanup(h):
+    """
+    Clean up html from result.json.
+    Explanation:
+    Step 1: Remove span.italic tags and its text content
+    Step 2: Remove a start tags
+    Step 3: Remove a end tags
+    Step 4: Remove span.e1q3nk1v4 tags
+    Step 5: Remove span endtags
+    Step 6: Remove full stops
+    Step 7: Remove colons
+    Let's hope no one has to touch this ever again.
+    """
+    h = re.sub(r'<span [^>]+? italic">[^<>]+?</span>', "", h)
+    h = re.sub(r'<a[^>]+?>', "", h)
+    h = re.sub(r'</a>', "", h)
+    h = re.sub(r'<span [^>]+?>', "", h)
+    h = re.sub(r'</span>', "", h)
+    h = h.replace(".", "")
+    h = h.replace(":", "")
+    return h
+
+
 def process(input_path="result.json", freq_path="freqlist.txt", level=10000):
     """
     Produce a pandas DataFrame from a json file with words and definitions,
@@ -34,10 +58,13 @@ def process(input_path="result.json", freq_path="freqlist.txt", level=10000):
     top <level> of <freqlist>, sort it alphabetically and return a list.
     """
 
-    with open(freq_path) as f:
-        freqlist = f.read().splitlines()
+    freqlist = readlist(freq_path)
     data = pd.read_json(input_path)
     for index, row in data.iterrows():
+        row['defi'] = filter(lambda s : s.lower().islower(), row['defi'])
+        row['defi'] = htmlCleanup(";".join(row['defi']))
+        row['defi'] = row['defi'].split(";")
+        row['defi'] = [d.strip() for d in row['defi']]
         row['defi'] = filter(lambda s : s.lower().islower(), row['defi'])
         row['defi'] = "; ".join(row['defi'])
     data = data.sort_values('word')
@@ -59,7 +86,7 @@ def crawl(wordlist):
 
     process = CrawlerProcess(settings)
 
-    process.crawl('alpha', words=wordlist)
+    process.crawl('beta', words=wordlist)
     process.start()
 
 def readlist(path):

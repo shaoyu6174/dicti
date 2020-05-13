@@ -9,3 +9,5 @@ text.txt
 dist
 dicti
 build/
+.ipynb_checkpoints/
+Untitled.ipynb
