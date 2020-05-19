@@ -1,4 +1,4 @@
-import spacy
+ import spacy
 import pandas as pd
 import os
 import wx
